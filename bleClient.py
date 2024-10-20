@@ -41,10 +41,5 @@ while True:
     value = characteristic.read().decode('utf-8')
     print(f"Received from ESP32: {value}")
     
-    if "Button 1 Pressed" in value:
-        print("Action for Button 1")
-    elif "Button 2 Pressed" in value:
-        print("Action for Button 2")
-    
-    time.sleep(1)  # Add a delay to reduce CPU usage
+    time.sleep(0.25)  # Add a delay to reduce CPU usage
 
