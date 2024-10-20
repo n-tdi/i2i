@@ -7,7 +7,7 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
 scanner = Scanner().withDelegate(ScanDelegate())
-devices = scanner.scan(20.0)
+devices = scanner.scan(7.0)
 
 esp32_addr = None
 
