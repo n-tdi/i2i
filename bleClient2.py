@@ -52,7 +52,7 @@ try:
             # Handle received notifications
             continue
 
-        print("Waiting...")
+        
 
 except BTLEDisconnectError:
     print("Disconnected from ESP32")
