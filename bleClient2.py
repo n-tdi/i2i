@@ -19,7 +19,12 @@ class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
 
-scanner = Scanner().withDelegate(ScanDelegate())
+try:
+  scanner = Scanner().withDelegate(ScanDelegate())
+except:
+  print("Error: Unable to start scanner, restart bluetooth?")
+  exit(1)
+
 devices = scanner.scan(7.0)
 
 esp32_addr = None
