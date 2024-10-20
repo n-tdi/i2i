@@ -32,6 +32,8 @@ characteristic_uuid = UUID("beb5483e-36e1-4688-b7f5-ea07361b26a8")
 service = esp32.getServiceByUUID(service_uuid)
 characteristic = service.getCharacteristics(characteristic_uuid)[0]
 
+esp32.writeCharacteristic(characteristic.getHandle() + 1, b"\x01\x00")
+
 # Read from the ESP32 characteristic
 initial_read = characteristic.read().decode('utf-8')
 print(f"Initial read from ESP32: {initial_read}")
