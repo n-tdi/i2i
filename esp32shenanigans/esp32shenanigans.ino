@@ -71,29 +71,40 @@ void setup() {
   Serial.println("Waiting for a client connection...");
 }
 
+bool button1Pressed = false;
+bool button2Pressed = false;
+
 void loop() {
   // Check button states
   if (deviceConnected) {
     // Button 1 pressed
-    if (digitalRead(BUTTON_1_PIN) == HIGH) {
-      pCharacteristic->setValue("B1 HIGH");
-      pCharacteristic->notify();  // Notify Raspberry Pi
-      Serial.println("Button 1 Pressed");
-      delay(500);  // Debounce delay
-    } else {
-      pCharacteristic->setValue("B1 LOW");
-      pCharacteristic->notify();  // Notify Raspberry Pi
+    if (digitalRead(BUTTON_1_PIN) == LOW) {
+      if (button1Pressed) {
+        pCharacteristic->setValue("B1 HIGH");
+        pCharacteristic->notify();  // Notify Raspberry Pi
+        Serial.println("Button 1 Pressed");
+        delay(500);  // Debounce delay
+      }
+    } else if (digitalRead(BUTTON_1_PIN) == HIGH) {
+        if (!button1Pressed) {
+          pCharacteristic->setValue("B2 LOW");
+          pCharacteristic->notify();  // Notify Raspberry Pi
+        }
     }
 
     // Button 2 pressed
-    if (digitalRead(BUTTON_2_PIN) == HIGH) {
-      pCharacteristic->setValue("B2 HIGH");
-      pCharacteristic->notify();  // Notify Raspberry Pi
-      Serial.println("Button 2 Pressed");
-      delay(500);  // Debounce delay
-    } else {
-      pCharacteristic->setValue("B2 LOW");
-      pCharacteristic->notify();  // Notify Raspberry Pi
+    if (digitalRead(BUTTON_2_PIN) == LOW) {
+      if (button1Pressed) {
+        pCharacteristic->setValue("B1 HIGH");
+        pCharacteristic->notify();  // Notify Raspberry Pi
+        Serial.println("Button 2 Pressed");
+        delay(500);  // Debounce delay
+      } 
+    } else if (digitalRead(BUTTON_2_PIN) == HIGH) {
+        if (!button1Pressed) {
+          pCharacteristic->setValue("B2 LOW");
+          pCharacteristic->notify();  // Notify Raspberry Pi
+        }
     }
   }
 }
