@@ -91,6 +91,8 @@ void loop() {
     } 
     else if (digitalRead(BUTTON_1_PIN) == HIGH && button1Pressed) {
       button1Pressed = false;
+      pCharacteristic->setValue("Button 1 Released");
+      pCharacteristic->notify();  // Notify Raspberry Pi
       Serial.println("Button 1 Released");
     }
 
@@ -103,6 +105,8 @@ void loop() {
     } 
     else if (digitalRead(BUTTON_2_PIN) == HIGH && button2Pressed) {
       button2Pressed = false;
+      pCharacteristic->setValue("Button 2 Released");
+      pCharacteristic->notify();  // Notify Raspberry Pi
       Serial.println("Button 2 Released");
     }
   }
