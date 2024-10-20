@@ -15,8 +15,25 @@ class NotificationDelegate(DefaultDelegate):
             print(f"Received new value: {value}")
             self.last_value = value  # Update the last value
 
-# ESP32 BLE address (replace with your device's address)
-esp32_addr = "e8:06:90:67:15:6e"
+class ScanDelegate(DefaultDelegate):
+    def __init__(self):
+        DefaultDelegate.__init__(self)
+
+scanner = Scanner().withDelegate(ScanDelegate())
+devices = scanner.scan(7.0)
+
+esp32_addr = None
+
+for dev in devices:
+    print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
+    for (adtype, desc, value) in dev.getScanData():
+        print(f"  {desc} = {value}")
+        if desc == "Complete Local Name" and value == "ESP32_BLE":
+            esp32_addr = dev.addr
+
+if esp32_addr is None:
+    print("ESP32 not found!")
+    exit(1)
 
 try:
     # Create a Peripheral object
