@@ -1,4 +1,4 @@
-from bluepy.btle import Peripheral, DefaultDelegate, BTLEDisconnectError
+from bluepy.btle import Peripheral, DefaultDelegate, BTLEDisconnectError, Scanner
 import struct
 
 class NotificationDelegate(DefaultDelegate):
