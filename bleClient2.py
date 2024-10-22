@@ -31,7 +31,7 @@ while True:
   try:
     print("Starting BLE scanner...")
     scanner = Scanner().withDelegate(ScanDelegate())
-    devices = scanner.scan(1.0)
+    devices = scanner.scan(4.0)
     break
   except:
     print("Error: Unable to start scanner, restarting bluetooth...")
