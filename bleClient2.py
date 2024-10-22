@@ -1,5 +1,6 @@
 from bluepy.btle import Peripheral, DefaultDelegate, BTLEDisconnectError, Scanner
 import struct
+import subprocess
 
 class NotificationDelegate(DefaultDelegate):
     def __init__(self):
@@ -19,13 +20,18 @@ class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
 
-try:
-  scanner = Scanner().withDelegate(ScanDelegate())
-except:
-  print("Error: Unable to start scanner, restart bluetooth?")
-  exit(1)
+devices = []
 
-devices = scanner.scan(7.0)
+while True:
+  try:
+    scanner = Scanner().withDelegate(ScanDelegate())
+    devices = scanner.scan(7.0)
+    break
+  except:
+    print("Error: Unable to start scanner, restarting bluetooth...")
+    subprocess.run(["systemctl", "restart", "bluetooth"]) 
+    exit(1)
+
 
 esp32_addr = None
 
