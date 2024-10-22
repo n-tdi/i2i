@@ -23,21 +23,49 @@ class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
 
+class Button():
+    def __init__(self, id, func):
+        self.id = id
+        self.pressed = False
+        self.func = func
+    
+    def press(self):
+        self.pressed = True
+    
+    def release(self):
+        self.pressed = False
 
+    def onPress(self):
+        return self.func(self) if self.pressed else None
+    
+def button1Pressed(button):
+    print("Button 1 pressed" + str(button.id))
+    return None
+
+def button2Pressed(button):
+    print("Button 2 pressed " + str(button.id))
+    return None
+
+class Buttons():
+    def __init__(self, notificationDelegate):
+        self.notificationDelegate = notificationDelegate
+        self.buttons = [Button(1, button1Pressed), Button(2, button2Pressed)]
+
+buttons = Buttons(NotificationDelegate())
 
 devices = []
 
 while True:
-  try:
-    print("Starting BLE scanner...")
-    scanner = Scanner().withDelegate(ScanDelegate())
-    devices = scanner.scan(4.0)
-    break
-  except:
-    print("Error: Unable to start scanner, restarting bluetooth...")
-    subprocess.run(["systemctl", "restart", "bluetooth"]) 
-    time.sleep(3)
-    continue
+    try:
+        print("Starting BLE scanner...")
+        scanner = Scanner().withDelegate(ScanDelegate())
+        devices = scanner.scan(4.0)
+        break
+    except:
+        print("Error: Unable to start scanner, restarting bluetooth...")
+        subprocess.run(["systemctl", "restart", "bluetooth"]) 
+        time.sleep(3)
+        continue
 
 
 esp32_addr = None
@@ -71,7 +99,16 @@ while True:
         while True:
             if esp32.waitForNotifications(1.0):
                 # Handle received notifications
-                print(notification.getTokenized())
+                token = notification.getTokenized()
+
+                for button in buttons.buttons:
+                    if button.id == int(token[1]):
+                        if token[2] == "Pressed":
+                            button.press()
+                        else:
+                            button.release()
+                        button.onPress()
+                        break
                 continue
 
             
