@@ -24,9 +24,9 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
 class Button():
-    def __init__(self, id, func):
+    def __init__(self, id: int, func):
         self.id = id
-        self.pressed = False
+        self.pressed: bool  = False
         self.func = func
     
     def press(self):
@@ -38,16 +38,16 @@ class Button():
     def onPress(self):
         return self.func(self) if self.pressed else None
     
-def button1Pressed(button):
+def button1Pressed(button: Button):
     print("Button 1 pressed " + str(button.id))
     return None
 
-def button2Pressed(button):
+def button2Pressed(button: Button):
     print("Button 2 pressed " + str(button.id))
     return None
 
 class Buttons():
-    def __init__(self, notificationDelegate):
+    def __init__(self, notificationDelegate: NotificationDelegate):
         self.notificationDelegate = notificationDelegate
         self.buttons = [Button(1, button1Pressed), Button(2, button2Pressed)]
 
