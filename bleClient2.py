@@ -14,12 +14,16 @@ class NotificationDelegate(DefaultDelegate):
 
         # Only process if the value is different from the last one
         if value != self.last_value:
-            print(f"Received new value: {value}")
             self.last_value = value  # Update the last value
+    
+    def getTokenized(self):
+        return self.last_value.split()
 
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
+
+
 
 devices = []
 
@@ -49,6 +53,7 @@ if esp32_addr is None:
     print("ESP32 not found!")
     exit(1)
 
+
 while True:
     try:
         # Create a Peripheral object
@@ -66,7 +71,7 @@ while True:
         while True:
             if esp32.waitForNotifications(1.0):
                 # Handle received notifications
-                print(notification.last_value)
+                print(notification.getTokenized())
                 continue
 
             
