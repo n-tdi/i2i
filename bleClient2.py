@@ -25,6 +25,7 @@ devices = []
 
 while True:
   try:
+    print("Starting BLE scanner...")
     scanner = Scanner().withDelegate(ScanDelegate())
     devices = scanner.scan(7.0)
     break
@@ -54,7 +55,8 @@ while True:
         esp32 = Peripheral(esp32_addr)
 
         # Set the delegate to handle notifications
-        esp32.setDelegate(NotificationDelegate())
+        notification = NotificationDelegate()
+        esp32.setDelegate(notification)
 
         # Discover services and characteristics
         esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
@@ -64,6 +66,7 @@ while True:
         while True:
             if esp32.waitForNotifications(1.0):
                 # Handle received notifications
+                print(notification.last_value)
                 continue
 
             
