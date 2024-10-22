@@ -39,7 +39,7 @@ class Button():
         return self.func(self) if self.pressed else None
     
 def button1Pressed(button):
-    print("Button 1 pressed" + str(button.id))
+    print("Button 1 pressed " + str(button.id))
     return None
 
 def button2Pressed(button):
