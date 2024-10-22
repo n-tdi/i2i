@@ -1,6 +1,7 @@
 from bluepy.btle import Peripheral, DefaultDelegate, BTLEDisconnectError, Scanner
 import struct
 import subprocess
+import time
 
 class NotificationDelegate(DefaultDelegate):
     def __init__(self):
@@ -30,6 +31,7 @@ while True:
   except:
     print("Error: Unable to start scanner, restarting bluetooth...")
     subprocess.run(["systemctl", "restart", "bluetooth"]) 
+    time.sleep(3)
     continue
 
 
