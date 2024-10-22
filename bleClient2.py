@@ -30,7 +30,7 @@ while True:
   except:
     print("Error: Unable to start scanner, restarting bluetooth...")
     subprocess.run(["systemctl", "restart", "bluetooth"]) 
-    exit(1)
+    continue
 
 
 esp32_addr = None
