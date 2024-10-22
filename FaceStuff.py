@@ -1,13 +1,19 @@
 import cv2
 from deepface import DeepFace
+import threading
 face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 print(cv2.data.haarcascades)
 video_capture = cv2.VideoCapture(0)
 import BetterGlob as bg
 
+global faces
+global foundfaces
+global num
+num= 0
+foundfaces = []
 DIRECTORY = bg.getdirectb("FaceStuff.py")
 
-
+"""
 def detect_bounding_box(vid):
     gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
     Foundaface = False
@@ -23,6 +29,25 @@ def detect_bounding_box(vid):
     for (x, y, w, h) in faces:
         cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
     return faces
+"""
+
+
+def faceStuff(name):
+    if find_face(name):
+        foundfaces.append(name.replace(".jpg", ""))
+
+
+
+def detect_bounding_box(vid):
+    gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
+    Foundaface = False
+    for x in bg.glob.glob(DIRECTORY.replace("\\", "/")+"faces/*"):
+        threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "\\").replace(DIRECTORY+"faces\\", ""), )).start()
+    faces = face_classifier.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
+    for (x, y, w, h) in faces:
+        cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
+    return faces
+
 
 def find_face(face):
     #print(frame)
@@ -36,17 +61,23 @@ def find_face(face):
     
 
 
-
+time = -1
 while True:
     result, video_frame = video_capture.read()  # read frames from the video
     if result is False:
         break  # terminate the loop if the frame is not read successfully
     
     cv2.imwrite(f'{DIRECTORY}frame.jpg', video_frame)
-    faces = detect_bounding_box(
-        video_frame
-    )  # use the function we created earlier to the video frame
+    time+=1
 
+    if time%60 == 0:
+        faces = detect_bounding_box(
+            video_frame
+        )  # use the function we created earlier to the video frame
+
+    if not foundfaces == []:
+        print(foundfaces)
+        foundfaces = []
     cv2.imshow(
         "Faces", video_frame#, cv2.imread("C:/Users/marsr/Documents/python_class/PythonCode/Shrimp Lock/faces/charlie.jpg")#, video_frame
     )  # display the processed frame in a window named "My Face Detection Project"
