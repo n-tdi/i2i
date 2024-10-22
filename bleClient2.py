@@ -40,24 +40,26 @@ if esp32_addr is None:
     print("ESP32 not found!")
     exit(1)
 
-try:
-    # Create a Peripheral object
-    esp32 = Peripheral(esp32_addr)
+while True:
+    try:
+        # Create a Peripheral object
+        esp32 = Peripheral(esp32_addr)
 
-    # Set the delegate to handle notifications
-    esp32.setDelegate(NotificationDelegate())
+        # Set the delegate to handle notifications
+        esp32.setDelegate(NotificationDelegate())
 
-    # Discover services and characteristics
-    esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
+        # Discover services and characteristics
+        esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
 
-    print("Connected to ESP32. Waiting for notifications...")
+        print("Connected to ESP32. Waiting for notifications...")
 
-    while True:
-        if esp32.waitForNotifications(1.0):
-            # Handle received notifications
-            continue
+        while True:
+            if esp32.waitForNotifications(1.0):
+                # Handle received notifications
+                continue
 
-        
+            
 
-except BTLEDisconnectError:
-    print("Disconnected from ESP32")
+    except BTLEDisconnectError:
+        print("Disconnected from ESP32")
+        print("Reconnecting...")
