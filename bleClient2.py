@@ -59,6 +59,7 @@ while True:
     try:
         print("Starting BLE scanner...")
         scanner = Scanner().withDelegate(ScanDelegate())
+        scanner.scan(0.5)
         devices = scanner.scan(4.0)
         break
     except:
@@ -71,11 +72,13 @@ while True:
 esp32_addr = None
 
 for dev in devices:
-    print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
     for (adtype, desc, value) in dev.getScanData():
-        print(f"  {desc} = {value}")
         if desc == "Complete Local Name" and value == "ESP32_BLE":
+            print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
+            print(f"  {desc} = {value}")
             esp32_addr = dev.addr
+            break
+    break
 
 if esp32_addr is None:
     print("ESP32 not found!")
