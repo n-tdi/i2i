@@ -11,49 +11,57 @@ global foundfaces
 global num
 num= 0
 foundfaces = []
-DIRECTORY = bg.getdirectb("FaceStuff.py")
+global threads
+threads = []
+global directory
 
-"""
-def detect_bounding_box(vid):
-    gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
-    Foundaface = False
-    for x in bg.glob.glob(DIRECTORY.replace("\\", "/")+"faces/*"):
-        #print(x.replace("/", "\\").replace(DIRECTORY+"faces\\", ""))
-        if not Foundaface:
-            if find_face(x.replace("/", "\\").replace(DIRECTORY+"faces\\", "")):
-                print(x.replace("/", "\\").replace(DIRECTORY+"faces\\", "").replace(".jpg", ""))
-                Foundaface = True
-    if not Foundaface:
-        print("unknown")
-    faces = face_classifier.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
-    for (x, y, w, h) in faces:
-        cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
-    return faces
-"""
+def init():
+    global directory 
+    directory = bg.getdirectb("FaceStuff.py")
+    print(directory)
 
-#hello
+init()
 
+'''
 def faceStuff(name):
     if find_face(name):
         foundfaces.append(name.replace(".jpg", ""))
+    #exit()
+'''
 
+def faceStuff():
+    try:
+        dfs = DeepFace.find(
+    img_path = directory+"frame.jpg",
+    db_path = directory+"faces\\",
+    )
+        for x in dfs:
+            foundfaces.append(x.to_dict()["identity"][0].replace(directory, "").replace("faces\\", "").replace(".jpg", "").replace("!", ""))
+    except:
+        pass
 
 
 def detect_bounding_box(vid):
     gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
     Foundaface = False
-    for x in bg.glob.glob(DIRECTORY.replace("\\", "/")+"faces/*"):
-        threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "\\").replace(DIRECTORY+"faces\\", ""), )).start()
     faces = face_classifier.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
     for (x, y, w, h) in faces:
         cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
+    if len(faces)>0:
+        image = vid.copy()[faces[0][1]:faces[0][1]+faces[0][3], faces[0][0]:faces[0][0]+faces[0][2]]
+        cv2.imwrite(f'{directory}frame.jpg', video_frame)
+        #for x in bg.glob.glob(directory.replace("\\", "/")+"faces/*"):
+        #    threads.append(f"Thread-{x}-{num}")
+            #threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "\\").replace(directory+"faces\\", ""), )).run()
+        threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = ( )).run()
+
     return faces
 
 
 def find_face(face):
     #print(frame)
     try:
-        result = DeepFace.verify(DIRECTORY+"frame.jpg", DIRECTORY+f"faces\\{face}")
+        result = DeepFace.verify(directory+"frame.jpg", directory+f"faces\\{face}")
         #print(result["verified"])
         return result["verified"]
     except Exception as e:
@@ -68,11 +76,11 @@ while True:
     if result is False:
         break  # terminate the loop if the frame is not read successfully
     
-    cv2.imwrite(f'{DIRECTORY}frame.jpg', video_frame)
+    cv2.imwrite(f'{directory}frame.jpg', video_frame)
     time+=1
 
-    if time%60 == 0:
-        faces = detect_bounding_box(
+    if time%30 == 0:
+        face = detect_bounding_box(
             video_frame
         )  # use the function we created earlier to the video frame
 
