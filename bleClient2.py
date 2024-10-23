@@ -1,5 +1,7 @@
 from bluepy.btle import Peripheral, DefaultDelegate, BTLEDisconnectError, Scanner
 import struct
+import subprocess
+import time
 
 class NotificationDelegate(DefaultDelegate):
     def __init__(self):
@@ -12,54 +14,112 @@ class NotificationDelegate(DefaultDelegate):
 
         # Only process if the value is different from the last one
         if value != self.last_value:
-            print(f"Received new value: {value}")
             self.last_value = value  # Update the last value
+    
+    def getTokenized(self):
+        return self.last_value.split()
 
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
 
-try:
-  scanner = Scanner().withDelegate(ScanDelegate())
-except:
-  print("Error: Unable to start scanner, restart bluetooth?")
-  exit(1)
+class Button():
+    def __init__(self, id: int, func):
+        self.id = id
+        self.pressed: bool  = False
+        self.func = func
+    
+    def press(self):
+        self.pressed = True
+    
+    def release(self):
+        self.pressed = False
 
-devices = scanner.scan(7.0)
+    def onPress(self):
+        return self.func(self) if self.pressed else None
+    
+def button1Pressed(button: Button):
+    print("Button 1 pressed " + str(button.id))
+    return None
 
-esp32_addr = None
+def button2Pressed(button: Button):
+    print("Button 2 pressed " + str(button.id))
+    return None
 
-for dev in devices:
-    print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
-    for (adtype, desc, value) in dev.getScanData():
-        print(f"  {desc} = {value}")
-        if desc == "Complete Local Name" and value == "ESP32_BLE":
-            esp32_addr = dev.addr
+class Buttons():
+    def __init__(self, notificationDelegate: NotificationDelegate):
+        self.notificationDelegate = notificationDelegate
+        self.buttons = []
+    def addButton(self, button: Button):
+        self.buttons.append(button)
 
-if esp32_addr is None:
-    print("ESP32 not found!")
-    exit(1)
+buttons = Buttons(NotificationDelegate())
 
-while True:
-    try:
-        # Create a Peripheral object
-        esp32 = Peripheral(esp32_addr)
+devices = []
 
-        # Set the delegate to handle notifications
-        esp32.setDelegate(NotificationDelegate())
+def startClient():
+    while True:
+        try:
+            print("Starting BLE scanner...")
+            scanner = Scanner().withDelegate(ScanDelegate())
+            scanner.scan(0.5)
+            devices = scanner.scan(4.0)
+            break
+        except:
+            print("Error: Unable to start scanner, restarting bluetooth...")
+            subprocess.run(["systemctl", "restart", "bluetooth"]) 
+            time.sleep(3)
+            continue
 
-        # Discover services and characteristics
-        esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
 
-        print("Connected to ESP32. Waiting for notifications...")
+    esp32_addr = None
 
-        while True:
-            if esp32.waitForNotifications(1.0):
-                # Handle received notifications
-                continue
+    for dev in devices:
+        for (adtype, desc, value) in dev.getScanData():
+            if desc == "Complete Local Name" and value == "ESP32_BLE":
+                print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
+                print(f"  {desc} = {value}")
+                esp32_addr = dev.addr
+                break
+        if (esp32_addr != None):
+            break
 
-            
+    if esp32_addr is None:
+        print("ESP32 not found!")
+        exit(1)
 
-    except BTLEDisconnectError:
-        print("Disconnected from ESP32")
-        print("Reconnecting...")
+
+    while True:
+        try:
+            # Create a Peripheral object
+            esp32 = Peripheral(esp32_addr)
+
+            # Set the delegate to handle notifications
+            notification = NotificationDelegate()
+            esp32.setDelegate(notification)
+
+            # Discover services and characteristics
+            esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
+
+            print("Connected to ESP32. Waiting for notifications...")
+
+            while True:
+                if esp32.waitForNotifications(1.0):
+                    # Handle received notifications
+                    token = notification.getTokenized()
+
+                    for button in buttons.buttons:
+                        if button.id == int(token[1]):
+                            if token[2] == "Pressed":
+                                button.press()
+                            else:
+                                button.release()
+                            button.onPress()
+                            break
+                    continue
+
+                
+
+        except BTLEDisconnectError:
+            print("Disconnected from ESP32")
+            print("Reconnecting...")
