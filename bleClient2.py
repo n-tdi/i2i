@@ -49,73 +49,77 @@ def button2Pressed(button: Button):
 class Buttons():
     def __init__(self, notificationDelegate: NotificationDelegate):
         self.notificationDelegate = notificationDelegate
-        self.buttons = [Button(1, button1Pressed), Button(2, button2Pressed)]
+        self.buttons = []
+    def addButton(self, button: Button):
+        self.buttons.append(button)
 
 buttons = Buttons(NotificationDelegate())
 
 devices = []
 
-while True:
-    try:
-        print("Starting BLE scanner...")
-        scanner = Scanner().withDelegate(ScanDelegate())
-        scanner.scan(0.5)
-        devices = scanner.scan(4.0)
-        break
-    except:
-        print("Error: Unable to start scanner, restarting bluetooth...")
-        subprocess.run(["systemctl", "restart", "bluetooth"]) 
-        time.sleep(3)
-        continue
-
-
-esp32_addr = None
-
-for dev in devices:
-    for (adtype, desc, value) in dev.getScanData():
-        if desc == "Complete Local Name" and value == "ESP32_BLE":
-            print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
-            print(f"  {desc} = {value}")
-            esp32_addr = dev.addr
+def startClient():
+    while True:
+        try:
+            print("Starting BLE scanner...")
+            scanner = Scanner().withDelegate(ScanDelegate())
+            scanner.scan(0.5)
+            devices = scanner.scan(4.0)
             break
-    break
+        except:
+            print("Error: Unable to start scanner, restarting bluetooth...")
+            subprocess.run(["systemctl", "restart", "bluetooth"]) 
+            time.sleep(3)
+            continue
 
-if esp32_addr is None:
-    print("ESP32 not found!")
-    exit(1)
+
+    esp32_addr = None
+
+    for dev in devices:
+        for (adtype, desc, value) in dev.getScanData():
+            if desc == "Complete Local Name" and value == "ESP32_BLE":
+                print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
+                print(f"  {desc} = {value}")
+                esp32_addr = dev.addr
+                break
+        if (esp32_addr != None):
+            break
+
+    if esp32_addr is None:
+        print("ESP32 not found!")
+        exit(1)
 
 
-while True:
-    try:
-        # Create a Peripheral object
-        esp32 = Peripheral(esp32_addr)
+    while True:
+        try:
+            # Create a Peripheral object
+            esp32 = Peripheral(esp32_addr)
 
-        # Set the delegate to handle notifications
-        notification = NotificationDelegate()
-        esp32.setDelegate(notification)
+            # Set the delegate to handle notifications
+            notification = NotificationDelegate()
+            esp32.setDelegate(notification)
 
-        # Discover services and characteristics
-        esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
+            # Discover services and characteristics
+            esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
 
-        print("Connected to ESP32. Waiting for notifications...")
+            print("Connected to ESP32. Waiting for notifications...")
 
-        while True:
-            if esp32.waitForNotifications(1.0):
-                # Handle received notifications
-                token = notification.getTokenized()
+            while True:
+                if esp32.waitForNotifications(1.0):
+                    # Handle received notifications
+                    token = notification.getTokenized()
 
-                for button in buttons.buttons:
-                    if button.id == int(token[1]):
-                        if token[2] == "Pressed":
-                            button.press()
-                        else:
-                            button.release()
-                        button.onPress()
-                        break
-                continue
+                    for button in buttons.buttons:
+                        if button.id == int(token[1]):
+                            if token[2] == "Pressed":
+                                button.press()
+                            else:
+                                button.release()
+                            button.onPress()
+                            break
+                    continue
 
-            
+                
 
-    except BTLEDisconnectError:
-        print("Disconnected from ESP32")
-        print("Reconnecting...")
+        except BTLEDisconnectError:
+            print("Disconnected from ESP32")
+            print("Reconnecting...")
