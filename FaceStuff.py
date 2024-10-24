@@ -42,8 +42,10 @@ def faceStuff():
     )
         for x in dfs:
             foundfaces.append(x.to_dict()["identity"][0].replace(directory, "").replace("faces\\", "").replace(".jpg", "").replace("!", ""))
-    except:
+    except ValueError:
         pass
+    except:
+        print("uh oh!")
 
 
 def detect_bounding_box(vid):
