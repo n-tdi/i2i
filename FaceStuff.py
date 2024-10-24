@@ -1,9 +1,9 @@
 import cv2
 from deepface import DeepFace
 import threading
-face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-print(cv2.data.haarcascades)
-video_capture = cv2.VideoCapture(0)
+#face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+#print(cv2.data.haarcascades)
+#video_capture = cv2.VideoCapture(0)
 import BetterGlob as bg
 
 global faces
@@ -14,11 +14,16 @@ foundfaces = []
 global threads
 threads = []
 global directory
-
+global face_classifier
+global video_capture
 def init():
     global directory 
     directory = bg.getdirectb("FaceStuff.py")
     print(directory)
+    global face_classifier
+    global video_capture
+    face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    video_capture = cv2.VideoCapture(0)
 
 init()
 
@@ -87,6 +92,8 @@ while True:
     if not foundfaces == []:
         print(foundfaces)
         foundfaces = []
+    else:
+        print("searching...")
     cv2.imshow(
         "Faces", video_frame#, cv2.imread("C:/Users/marsr/Documents/python_class/PythonCode/Shrimp Lock/faces/charlie.jpg")#, video_frame
     )  # display the processed frame in a window named "My Face Detection Project"
