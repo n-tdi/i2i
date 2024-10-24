@@ -31,6 +31,7 @@ def button1Pressed(button: bleClient2.Button):
 
 def say_name(names):
     # will be a function for saying the person's name
+    print(names)
     pass
     exit
 
