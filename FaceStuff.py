@@ -94,6 +94,7 @@ while True:
         foundfaces = []
     else:
         print("searching...")
+        print(directory)
     cv2.imshow(
         "Faces", video_frame#, cv2.imread("C:/Users/marsr/Documents/python_class/PythonCode/Shrimp Lock/faces/charlie.jpg")#, video_frame
     )  # display the processed frame in a window named "My Face Detection Project"
