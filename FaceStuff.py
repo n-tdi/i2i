@@ -5,7 +5,10 @@ import threading
 #print(cv2.data.haarcascades)
 #video_capture = cv2.VideoCapture(0)
 import BetterGlob as bg
+import os
 
+
+SEP = os.sep
 global faces
 global foundfaces
 global num
@@ -38,10 +41,10 @@ def faceStuff():
     try:
         dfs = DeepFace.find(
     img_path = directory+"frame.jpg",
-    db_path = directory+"faces\\",
+    db_path = directory+f"faces{SEP}",
     )
         for x in dfs:
-            foundfaces.append(x.to_dict()["identity"][0].replace(directory, "").replace("faces\\", "").replace(".jpg", "").replace("!", ""))
+            foundfaces.append(x.to_dict()["identity"][0].replace(directory, "").replace(f"faces{SEP}", "").replace(".jpg", "").replace("!", ""))
     except Exception as e:
         print("uh oh!")
         print(e)
@@ -56,9 +59,9 @@ def detect_bounding_box(vid):
     if len(faces)>0:
         image = vid.copy()[faces[0][1]:faces[0][1]+faces[0][3], faces[0][0]:faces[0][0]+faces[0][2]]
         cv2.imwrite(f'{directory}frame.jpg', video_frame)
-        #for x in bg.glob.glob(directory.replace("\\", "/")+"faces/*"):
+        #for x in bg.glob.glob(directory.replace("{SEP}", "/")+"faces/*"):
         #    threads.append(f"Thread-{x}-{num}")
-            #threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "\\").replace(directory+"faces\\", ""), )).run()
+            #threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "{SEP}").replace(directory+"faces{SEP}", ""), )).run()
         threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = ( )).run()
 
     return faces
@@ -67,7 +70,7 @@ def detect_bounding_box(vid):
 def find_face(face):
     #print(frame)
     try:
-        result = DeepFace.verify(directory+"frame.jpg", directory+f"faces\\{face}")
+        result = DeepFace.verify(directory+"frame.jpg", directory+f"faces{SEP}{face}")
         #print(result["verified"])
         return result["verified"]
     except Exception as e:
