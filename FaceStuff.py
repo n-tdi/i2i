@@ -38,6 +38,7 @@ def faceStuff(name):
 '''
 
 def faceStuff():
+    #print("searching")
     try:
         dfs = DeepFace.find(
     img_path = directory+"frame.jpg",
@@ -62,7 +63,7 @@ def detect_bounding_box(vid):
         #for x in bg.glob.glob(directory.replace("{SEP}", "/")+"faces/*"):
         #    threads.append(f"Thread-{x}-{num}")
             #threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = (x.replace("/", "{SEP}").replace(directory+"faces{SEP}", ""), )).run()
-        threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = ( )).run()
+        threading.Thread(None, faceStuff, f"Thread-{x}-{num}", args = ( )).start()
 
     return faces
 
