@@ -7,7 +7,7 @@ def takePhoto(name):
     ret,frame = cap.read() # return a single frame in variable `frame`
     q = True
     while q:
-        if "faces/"+name+".jpg" in bg.glob.glob(dir):
+        if "faces/"+name+".jpg" in bg.glob.glob("faces/"):
             name = name+"!"
         else:
             q = False
