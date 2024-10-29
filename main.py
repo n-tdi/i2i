@@ -37,8 +37,10 @@ def say_name(names):
 
 def button2Pressed(button: bleClient2.Button):
     # TODO: Implement recalling names here @Charlie
+    print("Analyzing for faces...")
     while True:
         result, video_frame = fs.video_capture.read()
+        print("Took photo")
         if result == False:
             break
         if fs.threading.active_count()<2:
