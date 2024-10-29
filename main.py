@@ -17,10 +17,10 @@ def button1Pressed(button: bleClient2.Button):
     if addingFace:
         return None
     addingFace = True
-    speaker_notif(Lines.SAY_NAME_OF_PERSON)
+    speaker_notif("Please say the name of the person.")
     name = speech_naming.transcribe(3, 2)
     if name == None:
-        speaker_notif(Lines.NO_NAME_DETECTED)
+        speaker_notif("No name detected, please try again.")
         return None
     take_photo.takePhoto(name)
     say_name(name)

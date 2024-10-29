@@ -15,7 +15,7 @@ def speaker_notif(line: Lines):
     engine.runAndWait()
 
 def say_name(name):
-    engine.say(Lines.ADDED_FACE + name)
+    engine.say("Added face " + name)
     engine.runAndWait()
 
 def speaker_notif(text: str):
