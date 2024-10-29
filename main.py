@@ -42,8 +42,8 @@ def button2Pressed(button: bleClient2.Button):
         print("Took photo")
         if result == False:
             break
-        fs.detect_bounding_box(video_frame)
-        print("Detected bounding box")
+        if fs.threading.active_count()<2:
+            fs.detect_bounding_box(video_frame)
         if len(fs.foundfaces)>0:
             fs.threading.Thread(None, say_name, "Talk Thread", (fs.foundfaces, )).start()
             fs.foundfaces = []
