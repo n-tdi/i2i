@@ -18,7 +18,7 @@ def button1Pressed(button: bleClient2.Button):
         return None
     addingFace = True
     speaker_notif(Lines.SAY_NAME_OF_PERSON)
-    name = speech_naming.transcribe(3, 3)
+    name = speech_naming.transcribe(3, 2)
     if name == None:
         speaker_notif(Lines.NO_NAME_DETECTED)
         return None
