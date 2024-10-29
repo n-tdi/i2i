@@ -41,6 +41,7 @@ def button2Pressed(button: bleClient2.Button):
         result, video_frame = fs.video_capture.read()
         print("Took photo")
         if result == False:
+            print(result)
             break
         if fs.threading.active_count()<2:
             fs.detect_bounding_box(video_frame)
