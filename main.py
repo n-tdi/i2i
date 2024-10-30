@@ -5,7 +5,7 @@
 import os
 import sys
 import time
-import bleClient2, speech_naming, take_photo
+import bleClient2, speech_naming
 from speaker_notif import speaker_notif, Lines, added_name
 import FaceStuff as fs
 

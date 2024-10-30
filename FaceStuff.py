@@ -75,6 +75,16 @@ def find_face(face):
         #print (e)
         return False
     
+def takePhoto(name):
+    ret,frame = video_capture.read() # return a single frame in variable `frame`
+    q = True
+    while q:
+        if "faces/"+name+".jpg" in bg.glob.glob("faces/"):
+            name = name+"!"
+        else:
+            q = False
+    cv2.imwrite(f'faces/{name}.jpg',frame)
+    print("Photo taken")
 
 '''
 time = -1
