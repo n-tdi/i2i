@@ -22,7 +22,7 @@ def button1Pressed(button: bleClient2.Button):
     if name == None:
         speaker_notif("No name detected, please try again.")
         return None
-    take_photo.takePhoto(name, fs.video_capture.read()[1])
+    fs.takePhoto(name, fs.video_capture.read()[1])
     added_name(name)
     addingFace = False
 
