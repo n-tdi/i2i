@@ -1,9 +1,10 @@
 import speech_recognition as sr
 
 # obtain audio from the microphone
-r = sr.Recognizer()
 
-def transcribe(timeout, phrase_time_limit):    
+def transcribe(timeout, phrase_time_limit): 
+    r = sr.Recognizer()
+
     with sr.Microphone() as source:
         print("Say something!")
         audio = r.listen(source, timeout=timeout, phrase_time_limit=phrase_time_limit)
@@ -17,3 +18,4 @@ def transcribe(timeout, phrase_time_limit):
     except sr.RequestError as e:
         print("Sphinx error; {0}".format(e))
         return None
+    
