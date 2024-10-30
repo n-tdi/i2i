@@ -5,7 +5,7 @@
 import os
 import sys
 import time
-import bleClient2, speech_naming
+import bleClient2, recognize_name
 from speaker_notif import speaker_notif, Lines, added_name
 import FaceStuff as fs
 
@@ -18,12 +18,12 @@ def button1Pressed(button: bleClient2.Button):
         return None
     addingFace = True
     speaker_notif("Please say the name of the person.")
-    name = speech_naming.transcribe(3, 2)
+    name = recognize_name.listen_for_3_seconds()
     if name == None:
         speaker_notif("No name detected, please try again.")
         return None
     fs.takePhoto(name)
-    added_name(name)
+    speaker_notif("Added face named..." + name)
     addingFace = False
 
     return None
