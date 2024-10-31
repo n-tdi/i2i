@@ -9,16 +9,18 @@ class Lines(Enum):
 
 # Initialize the converter
 engine = pyttsx3.init()
+engine.setProperty('rate', 75)
 
 def speaker_notif(line: Lines):
     engine.say(line.value)
-    engine.run()
+    engine.runAndWait()
 
 def added_name(name):
     engine.say("Added face " + name)
-    engine.run()
+    engine.runAndWait()
 
 def speaker_notif(text: str):
     engine.say(text)
-    engine.run()
+    engine.runAndWait()
+
 
