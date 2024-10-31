@@ -24,6 +24,16 @@ def listen_for_3_seconds():
     recognized_text = ""
 
     try:
+        data = stream.read(8192, exception_on_overflow=False)
+        if len(data) == 0:
+            print("No data received")
+        elif recognizer.AcceptWaveform(data):
+            result = recognizer.Result()
+            print(f"Recognized: {json.loads(result).get('text', '')}")
+    except Exception as e:
+        print(f"Stream error: {e}")
+
+    try:
         while True:
             # Stop after 3 seconds
             if time.time() - start_time > 3:
