@@ -13,7 +13,9 @@ def listen_for_3_seconds():
     recognizer = KaldiRecognizer(model, 16000)
 
     audio = pyaudio.PyAudio()
-    stream = audio.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096, input_device_index=1)
+    stream = audio.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, 
+                    frames_per_buffer=8192, input_device_index=1, input_latency=0.01)
+
     stream.start_stream()
 
     print("Listening for 3 seconds...")
@@ -35,6 +37,7 @@ def listen_for_3_seconds():
                 partial_result = recognizer.PartialResult()
                 partial_text = json.loads(partial_result).get("partial", "")
                 print(f"Partial: {partial_text}", end="\r")
+            time.sleep(0.01)
 
     except KeyboardInterrupt:
         print("\nInterrupted by user.")
