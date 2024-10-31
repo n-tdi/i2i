@@ -35,7 +35,6 @@ def listen_for_3_seconds():
                 partial_result = recognizer.PartialResult()
                 partial_text = json.loads(partial_result).get("partial", "")
                 print(f"Partial: {partial_text}", end="\r")
-            time.sleep(0.01)
 
     except KeyboardInterrupt:
         print("\nInterrupted by user.")
@@ -44,7 +43,7 @@ def listen_for_3_seconds():
     stream.close()
     audio.terminate()
 
-    print("Finished listening.")
+    print("Finished listening. " + recognized_text)
     return recognized_text
 
 listen_for_3_seconds()
