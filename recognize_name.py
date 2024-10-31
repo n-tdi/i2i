@@ -45,5 +45,3 @@ def listen_for_3_seconds():
 
     print("Finished listening. " + recognized_text)
     return recognized_text
-
-listen_for_3_seconds()
