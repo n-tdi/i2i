@@ -20,7 +20,7 @@ def button1Pressed(button: bleClient2.Button):
     addingFace = True
     speaker_notif("Please say the name of the person.")
     name = recognize_name.listen_for_3_seconds()
-    if name == None:
+    if name == None or name == "":
         speaker_notif("No name detected, please try again.")
         return None
     fs.takePhoto(name)
