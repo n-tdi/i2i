@@ -27,7 +27,7 @@ def listen_for_3_seconds():
             if time.time() - start_time > 3:
                 break
 
-            data = stream.read(4096, exception_on_overflow=False)
+            data = stream.read(8192, exception_on_overflow=False)
             if recognizer.AcceptWaveform(data):
                 result = recognizer.Result()
                 recognized_text = json.loads(result).get("text", "")
