@@ -63,7 +63,7 @@ def startClient():
             print("Starting BLE scanner...")
             scanner = Scanner().withDelegate(ScanDelegate())
             scanner.scan(0.5)
-            devices = scanner.scan(4.0)
+            devices = scanner.scan(8.0)
             break
         except:
             print("Error: Unable to start scanner, restarting bluetooth...")
