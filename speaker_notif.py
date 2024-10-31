@@ -9,7 +9,7 @@ class Lines(Enum):
 
 # Initialize the converter
 engine = pyttsx3.init()
-engine.setProperty('rate', 75)
+engine.setProperty('rate', 120)
 
 def speaker_notif(line: Lines):
     engine.say(line.value)
