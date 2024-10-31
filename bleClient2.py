@@ -107,6 +107,7 @@ def startClient():
                 if esp32.waitForNotifications(1.0):
                     # Handle received notifications
                     token = notification.getTokenized()
+                    print(token)
 
                     for button in buttons.buttons:
                         if button.id == int(token[1]):
