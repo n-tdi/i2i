@@ -13,7 +13,9 @@ addingFace = False
 fs.init()
 
 def button1Pressed(button: bleClient2.Button):
+    global addingFace
     if addingFace:
+        print(addingFace)
         return None
     addingFace = True
     speaker_notif("Please say the name of the person.")
