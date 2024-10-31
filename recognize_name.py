@@ -12,6 +12,7 @@ def listen_for_3_seconds():
 
     recognizer = KaldiRecognizer(model, 16000)
 
+    print("Initializing audio stream...")
     audio = pyaudio.PyAudio()
     print("Available audio devices:")
     stream = audio.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, 
