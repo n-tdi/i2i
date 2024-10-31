@@ -12,13 +12,13 @@ engine = pyttsx3.init()
 
 def speaker_notif(line: Lines):
     engine.say(line.value)
-    engine.runAndWait()
+    engine.run()
 
 def added_name(name):
     engine.say("Added face " + name)
-    engine.runAndWait()
+    engine.run()
 
 def speaker_notif(text: str):
     engine.say(text)
-    engine.runAndWait()
+    engine.run()
 

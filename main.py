@@ -13,7 +13,6 @@ addingFace = False
 fs.init()
 
 def button1Pressed(button: bleClient2.Button):
-    global addingFace
     if addingFace:
         return None
     addingFace = True
