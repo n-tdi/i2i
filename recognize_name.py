@@ -13,25 +13,17 @@ def listen_for_3_seconds():
     recognizer = KaldiRecognizer(model, 16000)
 
     audio = pyaudio.PyAudio()
+    print("Available audio devices:")
     stream = audio.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, 
                     frames_per_buffer=8192, input_device_index=1, input_latency=0.01)
-
+    
+    print("Opened audio stream.")
     stream.start_stream()
 
     print("Listening for 3 seconds...")
 
     start_time = time.time()
     recognized_text = ""
-
-    try:
-        data = stream.read(8192, exception_on_overflow=False)
-        if len(data) == 0:
-            print("No data received")
-        elif recognizer.AcceptWaveform(data):
-            result = recognizer.Result()
-            print(f"Recognized: {json.loads(result).get('text', '')}")
-    except Exception as e:
-        print(f"Stream error: {e}")
 
     try:
         while True:
