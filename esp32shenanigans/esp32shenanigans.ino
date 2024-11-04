@@ -1,9 +1,17 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
+#include <esp32-hal-ledc.h>
 
 #define BUTTON_1_PIN 20 // GPIO pin for Button 1
 #define BUTTON_2_PIN 21 // GPIO pin for Button 2
+
+#define STATUS_LED_PIN 7
+#define PWM_CHANNEL 0
+#define PWM_FREQUENCY 5000 // Hz
+#define PWM_RESOLUTION 8   // 8-bit resolution (0-255)
+#define LOW_DUTY_CYCLE 64  // 25% duty cycle (for ON)
+#define OFF_DUTY_CYCLE 0   // 0% duty cycle (for OFF)
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"  // Custom service UUID
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"  // Custom characteristic UUID
@@ -46,6 +54,8 @@ void setup() {
   // Initialize buttons
   pinMode(BUTTON_1_PIN, INPUT_PULLUP); // Button 1
   pinMode(BUTTON_2_PIN, INPUT_PULLUP); // Button 2
+
+  pinMode(STATUS_LED_PIN, OUTPUT);
 
   // Create the BLE Device
   BLEDevice::init("ESP32_BLE");
@@ -109,5 +119,8 @@ void loop() {
       pCharacteristic->notify();  // Notify Raspberry Pi
       Serial.println("Button 2 Released");
     }
+    digitalWrite(STATUS_LED_PIN, HIGH);
+  } else {
+    digitalWrite(STATUS_LED_PIN, LOW);
   }
 }
