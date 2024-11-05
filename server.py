@@ -1,9 +1,10 @@
 import socket
 def run_server(ip, port):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_ip = ip
+    server_ip = socket.gethostname()
     port = port
     server.bind((server_ip, port))
+    print(socket.gethostname())
     server.listen(0)
     print(f"Listening on {server_ip}:{port}")
     client_socket, client_address = server.accept()
