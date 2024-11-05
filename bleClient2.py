@@ -88,6 +88,7 @@ def startClient():
         print("ESP32 not found!")
         exit(1)
 
+    attempts = 0
 
     while True:
         try:
@@ -102,6 +103,7 @@ def startClient():
             esp32.writeCharacteristic(0x0011, struct.pack('<bb', 0x01, 0x00))  # Enable notifications (this might vary based on characteristic handle)
 
             print("Connected to ESP32. Waiting for notifications...")
+            attempts = 0
 
             while True:
                 if esp32.waitForNotifications(1.0):
@@ -122,5 +124,9 @@ def startClient():
                 
 
         except BTLEDisconnectError:
+            if attempts >= 50:
+                print("Failed to reconnect after 3 attempts. Exiting...")
+                break
             print("Disconnected from ESP32")
             print("Reconnecting...")
+            attempts += 1
