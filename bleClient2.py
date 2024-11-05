@@ -58,35 +58,38 @@ buttons = Buttons(NotificationDelegate())
 devices = []
 
 def startClient():
-    while True:
-        try:
-            print("Starting BLE scanner...")
-            scanner = Scanner().withDelegate(ScanDelegate())
-            scanner.scan(0.5)
-            devices = scanner.scan(8.0)
-            break
-        except:
-            print("Error: Unable to start scanner, restarting bluetooth...")
-            subprocess.run(["systemctl", "restart", "bluetooth"]) 
-            time.sleep(3)
-            continue
-
-
     esp32_addr = None
 
-    for dev in devices:
-        for (adtype, desc, value) in dev.getScanData():
-            if desc == "Complete Local Name" and value == "ESP32_BLE":
-                print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
-                print(f"  {desc} = {value}")
-                esp32_addr = dev.addr
+    while True:
+        while True:
+            try:
+                print("Starting BLE scanner...")
+                scanner = Scanner().withDelegate(ScanDelegate())
+                scanner.scan(0.5)
+                devices = scanner.scan(8.0)
                 break
-        if (esp32_addr != None):
-            break
+            except:
+                print("Error: Unable to start scanner, restarting bluetooth...")
+                subprocess.run(["systemctl", "restart", "bluetooth"]) 
+                time.sleep(3)
+                continue
+        for dev in devices:
+            for (adtype, desc, value) in dev.getScanData():
+                if desc == "Complete Local Name" and value == "ESP32_BLE":
+                    print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
+                    print(f"  {desc} = {value}")
+                    esp32_addr = dev.addr
+                    break
+            if (esp32_addr != None):
+                break
 
-    if esp32_addr is None:
-        print("ESP32 not found!")
-        exit(1)
+        if esp32_addr is None:
+            print("ESP32 not found!")
+            time.sleep(1)
+            continue
+        else:
+            print("ESP32 found!")
+            break
 
     attempts = 0
 
