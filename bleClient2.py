@@ -68,7 +68,7 @@ def startClient():
                 scanner.scan(0.5)
                 devices = scanner.scan(8.0)
                 break
-            except:
+            except BTLEDisconnectError:
                 print("Error: Unable to start scanner, restarting bluetooth...")
                 subprocess.run(["systemctl", "restart", "bluetooth"]) 
                 time.sleep(3)
