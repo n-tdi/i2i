@@ -26,7 +26,15 @@ def init():
     global face_classifier
     global video_capture
     face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    video_capture = cv2.VideoCapture(0)
+    x = 0
+    while True:
+        video_capture = cv2.VideoCapture(x)
+        if video_capture.read()[0]:
+            break
+        else:
+            x+=1
+    print(x)
+        
 '''
 def faceStuff(name):
     if find_face(name):
