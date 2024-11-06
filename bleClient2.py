@@ -62,17 +62,17 @@ def startClient():
 
     while True:
         while True:
-            try:
-                print("Starting BLE scanner...")
-                scanner = Scanner().withDelegate(ScanDelegate())
-                scanner.scan(0.5)
-                devices = scanner.scan(8.0)
-                break
-            except BTLEException:
-                print("Error: Unable to start scanner, restarting bluetooth...")
-                subprocess.run(["systemctl", "restart", "bluetooth"]) 
-                time.sleep(3)
-                continue
+            # try:
+            print("Starting BLE scanner...")
+            scanner = Scanner().withDelegate(ScanDelegate())
+            scanner.scan(0.5)
+            devices = scanner.scan(8.0)
+            break
+            # except:
+            #     print("Error: Unable to start scanner, restarting bluetooth...")
+            #     subprocess.run(["systemctl", "restart", "bluetooth"]) 
+            #     time.sleep(3)
+            #     continue
         for dev in devices:
             for (adtype, desc, value) in dev.getScanData():
                 if desc == "Complete Local Name" and value == "ESP32_BLE":
