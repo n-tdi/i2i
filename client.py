@@ -39,4 +39,4 @@ def run_multiclient(ip, port):
     print("Connection to server closed")
 
 
-run_client("i2i.local", 8888)
+run_client("0ct0lingsLaptop.local", 8888)
