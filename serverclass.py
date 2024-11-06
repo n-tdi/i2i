@@ -54,5 +54,5 @@ class server:
     def close(self):
         self.socket.sendall("closed".encode("utf-8"))
         self.socket.close()
-newsocket = server(8888)
-newsocket.startListening(2)
+#newsocket = server(8888)
+#newsocket.startListening(2)
