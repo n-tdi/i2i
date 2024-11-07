@@ -12,8 +12,5 @@ while True:
         x+=1
 print(x)
 
-def takePhoto(name): # return a single frame in variable `frame`
-    cv2.imwrite(f'{name}.jpg',video_capture.read()[1])
-    print("Photo taken")
-
-takePhoto("Testing")
+cv2.imwrite(f'test.jpg',video_capture.read()[1])
+print("Photo taken")
