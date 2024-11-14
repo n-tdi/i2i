@@ -6,6 +6,62 @@ import time
 import zlib
 import brotli
 import io
+
+def key_to_char(Keys):
+    string = ""
+    if Keys[pygame.K_q]:
+         string = string+ "q"
+    if Keys[pygame.K_w]:
+         string = string+ "w"
+    if Keys[pygame.K_e]:
+         string = string+ "e"
+    if Keys[pygame.K_r]:
+         string = string+ "r"
+    if Keys[pygame.K_t]:
+         string = string+ "t"
+    if Keys[pygame.K_y]:
+         string = string+ "y"
+    if Keys[pygame.K_u]:
+         string = string+ "u"
+    if Keys[pygame.K_i]:
+         string = string+ "i"
+    if Keys[pygame.K_o]:
+         string = string+ "o"
+    if Keys[pygame.K_p]:
+         string = string+ "p"
+    if Keys[pygame.K_a]:
+         string = string+ "a"
+    if Keys[pygame.K_s]:
+         string = string+ "s"
+    if Keys[pygame.K_d]:
+         string = string+ "d"
+    if Keys[pygame.K_f]:
+         string = string+ "f"
+    if Keys[pygame.K_g]:
+         string = string+ "g"
+    if Keys[pygame.K_h]:
+         string = string+ "h"
+    if Keys[pygame.K_j]:
+         string = string+ "j"
+    if Keys[pygame.K_k]:
+         string = string+ "k"
+    if Keys[pygame.K_l]:
+         string = string+ "l"
+    if Keys[pygame.K_z]:
+         string = string+ "z"
+    if Keys[pygame.K_x]:
+         string = string+ "x"
+    if Keys[pygame.K_c]:
+         string = string+ "c"
+    if Keys[pygame.K_v]:
+         string = string+ "v"
+    if Keys[pygame.K_b]:
+         string = string+ "b"
+    if Keys[pygame.K_n]:
+         string = string+ "n"
+    if Keys[pygame.K_m]:
+         string = string+ "m"
+    return string
 class client:
     def __init__(self, ip, port):
         self.connector = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,19 +147,24 @@ class display:
         ypos = -self.scroll+10
         for x in self.images:
             txtn = self.font.render(x[0], True, (0, 255, 0))
+            txtrect = txtn.get_rect()
             self.win.blit(txtn, (10, ypos))
+            txtrect.x = 10
+            txtrect.y = ypos
             ypos+=25
             img = x[1]
             if type(img) == pygame.Surface:
                 self.win.blit(img, (10, ypos))
                 ypos+=img.get_height()+20
+            if txtrect.collidepoint(mouse[0], mouse[1]) and mouseclick[0]:
+                x[0] = self.textedit(x[0])
         if keys[pygame.K_DOWN]:
             if self.scroll<(ypos+(self.scroll-10)-self.win.get_height()):
                 self.scroll+=5
         if keys[pygame.K_UP]:
             if self.scroll>0:
                 self.scroll-=5
-        if keys[pygame.K_p]:
+        if keys[pygame.K_LSHIFT]:
             self.sock.closeself()
             self.sock.closed = True
             return False
@@ -120,6 +181,43 @@ class display:
         pygame.display.update()
         return True
 
+    def textedit(self, tax_fraud):
+        text = tax_fraud
+        pressbutton = False
+        while True:
+            self.win.fill((0, 0, 0))
+            txt = self.font.render(text, True, (0, 255, 0))
+            self.win.blit(txt, ((self.win.get_width()/2)-(txt.get_width()/2), (self.win.get_height()/2)-(txt.get_height()/2)))
+            keys = pygame.key.get_pressed()
+            intxt = key_to_char(keys)
+            if not intxt == "":
+                if not pressbutton:
+                    text = text+intxt
+                pressbutton = True
+            elif keys[pygame.K_SPACE]:
+                if not pressbutton:
+                    return text
+                pressbutton = True
+            elif keys[pygame.K_BACKSPACE]:
+                if not pressbutton:
+                    text = text[0:len(text)-1]
+                pressbutton = True
+            else:
+                pressbutton = False
+
+
+            if keys[pygame.K_LSHIFT]:
+                self.sock.closeself()
+                self.sock.closed = True
+                return ""
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.sock.closeself()
+                    self.sock.closed = True
+                    return ""
+                
+
+            pygame.display.update()
 
     def getimages(self):
         #self.images = [["frame", pygame.image.load("frame.jpg")], ["frame2", pygame.image.load("frame.jpg")], ["frame3", pygame.image.load("frame.jpg")]]
@@ -155,10 +253,6 @@ class display:
                 self.sock.messages.remove(x)
         self.sock.messages.remove("done")
         return True
-
-        
-
-
 
 mydisplay = display("0ct0lingsLaptop.local", 8888)
 a = True
