@@ -8,9 +8,7 @@ import brotli
 
 DIRECTORY = bg.getdirectb("thing.txt")
 print(DIRECTORY)
-'''
-set start_x or cam_detected to 1 in raspi boot/firmware/config.txt
-'''
+
 class server:
     def __init__(self, port: int, backlog: int = 1) -> None:
         self.socket = skt.socket(skt.AF_INET, skt.SOCK_STREAM)
@@ -43,7 +41,8 @@ class server:
                 print("a")
                 img = img.read()
                 print("b")
-                x.append([y.replace(".jpg", ""), zlib.compress(img)])#pygame.image.tobytes(img, 'RGB'), [img.get_width(), img.get_height()]])
+                print(y.replace(".jpg", "").replace(DIRECTORY, "").replace("!", ""))
+                x.append([y.replace(".jpg", "").replace(DIRECTORY, "").replace("!", ""), zlib.compress(img)])#pygame.image.tobytes(img, 'RGB'), [img.get_width(), img.get_height()]])
                 #x.append(brotli.compress(pickle.dumps([y.replace(".jpg", "").replace(DIRECTORY.replace("\\", "/"), ""), pygame.image.tobytes(img, 'RGB'), [img.get_width(), img.get_height()]]), brotli.MODE_GENERIC, 5))
         pickled_data = brotli.compress(pickle.dumps(x), brotli.MODE_GENERIC, datacomp)
         if self.datacomp<=datacomp:
