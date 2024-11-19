@@ -1,7 +1,7 @@
 import socket as skt
 import threading as t
 import BetterGlob as bg
-import pygame
+#import pygame
 import pickle
 import zlib
 import brotli
@@ -13,6 +13,7 @@ class server:
     def __init__(self, port: int, backlog: int = 1) -> None:
         self.socket = skt.socket(skt.AF_INET, skt.SOCK_STREAM)
         self.ip = skt.gethostname()+".local"
+        self.ip = "0.0.0.0"
         self.port = port
         self.socket.bind((self.ip, port))
         print(f"Server created with ip {self.ip}, and port {port}")
@@ -36,7 +37,7 @@ class server:
         x = []
         for y in bg.glob.glob(DIRECTORY+"*".replace("\\", "/")):
             if not y.replace(".jpg", "") == y:
-                pimg = pygame.image.load(y)
+                #pimg = pygame.image.load(y)
                 img = open(y, "rb")
                 print("a")
                 img = img.read()
@@ -78,8 +79,8 @@ class server:
                         break
                     if request.lower() == "getimages":
                         print("sending images")
+                        answer = "got packet"
                         if len(bg.glob.glob(DIRECTORY+"*".replace("\\", "/"))) >0:
-                            answer = "got packet"
                             print("c")
                             while not answer == "got packet":
                                 answer = client_socket.recv(1024).decode("utf-8")

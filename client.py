@@ -102,6 +102,7 @@ class client:
                 while A:
                     t =time.time()
                     if self.closed:
+                        A = False
                         exit
                     packet = self.connector.recv(4096)
                     print(time.time()-t)
@@ -127,6 +128,7 @@ class client:
         exit
     def closeself(self):
         self.connector.send("close".encode("utf-8")[:1024])   
+        self.closed = True
 
 class display:
     def __init__(self, ip, port):
@@ -137,7 +139,7 @@ class display:
         self.win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.scroll = 0
         self.font = pygame.font.SysFont("MS Gothic", 20)
-        self.sock.closed = True
+        #self.sock.closed = False
         self.getimages()
     def update(self):
         mouse = pygame.mouse.get_pos()
@@ -157,7 +159,12 @@ class display:
                 self.win.blit(img, (10, ypos))
                 ypos+=img.get_height()+20
             if txtrect.collidepoint(mouse[0], mouse[1]) and mouseclick[0]:
-                x[0] = self.textedit(x[0])
+                a = self.textedit(x[0])
+                if not a == "closed!":
+                    x[0] = a
+                else:
+                    self.sock.closeself()
+                    return False
         if keys[pygame.K_DOWN]:
             if self.scroll<(ypos+(self.scroll-10)-self.win.get_height()):
                 self.scroll+=5
@@ -166,17 +173,15 @@ class display:
                 self.scroll-=5
         if keys[pygame.K_LSHIFT]:
             self.sock.closeself()
-            self.sock.closed = True
             return False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.sock.closeself()
-                self.sock.closed = True
                 return False
         if keys[pygame.K_r]:
             self.scroll = 0
             if not self.getimages():
-                self.sock.closed = True
+                self.sock.closeself()
                 return False
         pygame.display.update()
         return True
@@ -208,13 +213,11 @@ class display:
 
             if keys[pygame.K_LSHIFT]:
                 self.sock.closeself()
-                self.sock.closed = True
-                return ""
+                return "closed!"
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.sock.closeself()
-                    self.sock.closed = True
-                    return ""
+                    return "closed!"
                 
 
             pygame.display.update()
@@ -235,12 +238,10 @@ class display:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_p]:
                 self.sock.closeself()
-                self.sock.closed = True
                 return False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.sock.closeself()
-                    self.sock.closed = True
                     return False
             pygame.display.update()
             #print(self.sock.messages)
@@ -254,7 +255,7 @@ class display:
         self.sock.messages.remove("done")
         return True
 
-mydisplay = display("0ct0lingsLaptop.local", 8888)
+mydisplay = display("0ct0lingsLaptop", 8888)
 a = True
 while a:
     a = mydisplay.update()
