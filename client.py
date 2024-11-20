@@ -255,7 +255,7 @@ class display:
         self.sock.messages.remove("done")
         return True
 
-mydisplay = display("0ct0lingsLaptop", 8888)
+mydisplay = display("i2i.local", 8888)
 a = True
 while a:
     a = mydisplay.update()

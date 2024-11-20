@@ -13,7 +13,7 @@ class server:
     def __init__(self, port: int, backlog: int = 1) -> None:
         self.socket = skt.socket(skt.AF_INET, skt.SOCK_STREAM)
         self.ip = skt.gethostname()+".local"
-        self.ip = "0.0.0.0"
+        #self.ip = "0.0.0.0"
         self.port = port
         self.socket.bind((self.ip, port))
         print(f"Server created with ip {self.ip}, and port {port}")
