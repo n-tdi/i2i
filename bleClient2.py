@@ -75,8 +75,6 @@ def startClient():
                 continue
         for dev in devices:
             for (adtype, desc, value) in dev.getScanData():
-                print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
-                print(f"  {desc} = {value}")
                 if desc == "Complete Local Name" and value == "ESP32_BLE":
                     print(f"Device {dev.addr} ({dev.addrType}), RSSI={dev.rssi} dB")
                     print(f"  {desc} = {value}")
