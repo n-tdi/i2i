@@ -127,7 +127,7 @@ def startClient():
                 
 
         except BTLEDisconnectError:
-            if attempts >= 50:
+            if attempts >= 100:
                 print("Failed to reconnect after 50 attempts. Exiting...")
                 break
             print("Disconnected from ESP32")

@@ -161,6 +161,7 @@ class display:
             if txtrect.collidepoint(mouse[0], mouse[1]) and mouseclick[0]:
                 a = self.textedit(x[0])
                 if not a == "closed!":
+                    self.sock.connector.send(f"E:{x[0]}->{a}")
                     x[0] = a
                 else:
                     self.sock.closeself()
@@ -171,7 +172,7 @@ class display:
         if keys[pygame.K_UP]:
             if self.scroll>0:
                 self.scroll-=5
-        if keys[pygame.K_LSHIFT]:
+        if keys[pygame.K_ESCAPE]:
             self.sock.closeself()
             return False
         for event in pygame.event.get():
@@ -195,11 +196,13 @@ class display:
             self.win.blit(txt, ((self.win.get_width()/2)-(txt.get_width()/2), (self.win.get_height()/2)-(txt.get_height()/2)))
             keys = pygame.key.get_pressed()
             intxt = key_to_char(keys)
+            if keys[pygame.K_LSHIFT]:
+                intxt = intxt.upper()
             if not intxt == "":
                 if not pressbutton:
                     text = text+intxt
                 pressbutton = True
-            elif keys[pygame.K_SPACE]:
+            elif keys[pygame.K_TAB]:
                 if not pressbutton:
                     return text
                 pressbutton = True
@@ -211,7 +214,7 @@ class display:
                 pressbutton = False
 
 
-            if keys[pygame.K_LSHIFT]:
+            if keys[pygame.K_ESCAPE]:
                 self.sock.closeself()
                 return "closed!"
             for event in pygame.event.get():
@@ -255,7 +258,7 @@ class display:
         self.sock.messages.remove("done")
         return True
 
-mydisplay = display("i2i.local", 8888)
+mydisplay = display("0ct0lingsLaptop.local", 8888)
 a = True
 while a:
     a = mydisplay.update()

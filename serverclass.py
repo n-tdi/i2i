@@ -77,7 +77,7 @@ class server:
                     request = request.decode("utf-8")
                     if request.lower() == "close" or close:
                         break
-                    if request.lower() == "getimages":
+                    elif request.lower() == "getimages":
                         print("sending images")
                         answer = "got packet"
                         if len(bg.glob.glob(DIRECTORY+"*".replace("\\", "/"))) >0:
@@ -101,6 +101,9 @@ class server:
                             while not answer == "got packet":
                                 answer = client_socket.recv(1024).decode("utf-8")
                         client_socket.send("done".encode("utf-8"))
+                    elif request[0:2]=="E:":
+                        request = request[2:]
+                        
                     else:
                         self.messages.append([f"{client_address[0]}:{client_address[1]}", request])
                         print(f"Received: {request} from {client_address[0]}:{client_address[1]}.")
