@@ -10,10 +10,10 @@ model = Model(MODEL_PATH)
 def listen_for_3_seconds():
     """Listens for audio input for 3 seconds and returns the recognized text."""
 
-    recognizer = KaldiRecognizer(model, 1600)
+    recognizer = KaldiRecognizer(model, 44100)
 
     audio = pyaudio.PyAudio()
-    stream = audio.open(format=pyaudio.paInt16, channels=1, rate=1600, input=True, frames_per_buffer=4096)
+    stream = audio.open(format=pyaudio.paInt16, channels=1, rate=44100, input=True, frames_per_buffer=4096)
     stream.start_stream()
 
     print("Listening for 3 seconds...")
