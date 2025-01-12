@@ -23,7 +23,7 @@ def record_audio():
 
 # Transcribe the audio
 def transcribe_audio(audio):
-    recognizer.accept_waveform(audio.tobytes())
+    recognizer.AcceptWaveform(audio.tobytes())
     result = recognizer.result()
     return result["text"]
 
