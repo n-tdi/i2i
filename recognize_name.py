@@ -9,7 +9,7 @@ model = Model(MODEL_PATH)
 
 # Set up the Vosk model
 model = Model("vosk-model-small-en-us-0.15")  # Replace with your model path
-recognizer = KaldiRecognizer(model, 16000)
+recognizer = KaldiRecognizer(model)
 
 # Record audio from the microphone
 def record_audio():
@@ -23,7 +23,7 @@ def record_audio():
 
 # Transcribe the audio
 def transcribe_audio(audio):
-    recognizer.AcceptWaveform(audio.tobytes())
+    recognizer.accept_waveform(audio.tobytes())
     result = recognizer.result()
     return result["text"]
 
